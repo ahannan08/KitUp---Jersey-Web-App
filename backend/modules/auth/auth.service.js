@@ -1,4 +1,4 @@
-import User from "../modules/users/user.model.js";
+import User from "../users/users.model.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";

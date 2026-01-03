@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import User from "../modules/users/user.model.js";
+import User from "../modules/users/users.model.js";
 
 export const protect = async (req, res, next) => {
   try {
@@ -9,6 +9,8 @@ export const protect = async (req, res, next) => {
       return res.status(401).json({ message: "Not authenticated" });
     }
 
+
+    
     const token = authHeader.split(" ")[1];
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 

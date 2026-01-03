@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
-import { connectDB } from "./config/db.js";
-import { ENV } from "./config/env.js";
+import { connectDB } from "../config/db.js";
+import { ENV } from "../config/env.js";
 
 // Initialize Express app
 const app = express();
@@ -34,11 +34,11 @@ connectDB();
 // ROUTES
 // ============================================
 
-import authRoutes from "./modules/auth/auth.route.js";
-import userRoutes from "./modules/users/user.route.js";
-import productRoutes from "./modules/products/product.route.js";
-import cartRoutes from "./modules/carts/cart.route.js";
-import wishlistRoutes from "./modules/wishlist/wishlist.route.js";
+import authRoutes from "../modules/auth/auth.routes.js";
+import userRoutes from "../modules/users/users.routes.js";
+import productRoutes from "../modules/products/products.routes.js";
+import cartRoutes from "../modules/cart/cart.routes.js";
+import wishlistRoutes from "../modules/wishlist/wishlist.routes.js";
 // import orderRoutes from "./modules/orders/order.route.js";
 // import paymentRoutes from "./modules/payments/payment.route.js";
 

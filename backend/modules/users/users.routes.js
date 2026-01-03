@@ -6,7 +6,7 @@ import {
   getAllUsers,
   updateUser,
   deleteUser,
-} from "./user.controller.js";
+} from "./users.controller.js";
 import { protect, isAdmin } from "../../middlewares/auth.middleware.js";
 
 const router = express.Router();
@@ -14,6 +14,7 @@ const router = express.Router();
 // Protected routes (user)
 router.get("/profile", protect, getProfile);
 router.put("/profile", protect, updateProfile);
+
 
 // Admin routes
 router.get("/", protect, isAdmin, getAllUsers);

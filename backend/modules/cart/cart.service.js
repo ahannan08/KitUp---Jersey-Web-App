@@ -1,5 +1,5 @@
 import Cart from "./cart.model.js";
-import Product from "../products/product.model.js";
+import Product from "../products/products.model.js";
 
 const calculateCartTotals = (items) => {
   let totalPrice = 0;

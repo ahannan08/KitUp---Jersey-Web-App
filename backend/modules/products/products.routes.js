@@ -7,7 +7,7 @@ import {
   updateProduct,
   deleteProduct,
   searchProducts,
-} from "./product.controller.js";
+} from "./products.controller.js";
 import { protect, isAdmin } from "../../middlewares/auth.middleware.js";
 
 const router = express.Router();
