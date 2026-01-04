@@ -1,10 +1,9 @@
 import * as productService from "./products.service.js";
 
-// controllers/products.controller.js
 
 export const fetchClubs = async (req, res) => {
   try {
-    const { page = 1, limit = 20, league, search } = req.query;
+    const { page = 1, limit = 20, league, search } = req.query; 
 
     const result = await productService.getClubs({
       page: Number(page),
@@ -53,6 +52,21 @@ export const fetchJerseys = async (req, res) => {
 
 
 
+
+export const fetchClubById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const club = await productsService.getClubById(id);
+
+    return res.status(200).json({
+      success: true,
+      data: club,
+    });
+  } catch (err) {
+    return res.status(400).json({ success: false, message: err.message });
+  }
+};
 
 
 

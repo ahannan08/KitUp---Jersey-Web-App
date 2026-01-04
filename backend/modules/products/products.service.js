@@ -95,6 +95,22 @@ export const getJerseys = async ({
 
 
 
+// (you already have this) import Club from "../models/club.model.js";
+
+export const getClubById = async (id) => {
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    throw new Error("Invalid club id");
+  }
+  
+
+  const club = await Club.findById(id).lean();
+
+  if (!club) {
+    throw new Error("Club not found");
+  }
+
+  return club;
+};
 
 
 

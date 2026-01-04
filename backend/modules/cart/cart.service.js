@@ -1,5 +1,6 @@
+// cart.service.js
 import Cart from "./cart.model.js";
-import Product from "../products/products.model.js";
+import Jersey from "../jersey/jersey.model.js"; // Changed from Product
 
 const calculateCartTotals = (items) => {
   let totalPrice = 0;
@@ -13,28 +14,16 @@ const calculateCartTotals = (items) => {
   return { totalPrice, totalItems };
 };
 
-export const getCart = async (userId) => {
-  let cart = await Cart.findOne({ user: userId }).populate("items.product");
 
-  if (!cart) {
-    cart = await Cart.create({ user: userId, items: [] });
-  }
 
-  return cart;
-};
+export const addToCart = async (userId, jerseyId, quantity, size) => {
+  // Changed productId to jerseyId
+  const jersey = await Jersey.findById(jerseyId); // Changed from Product
+  if (!jersey) throw new Error("Jersey not found");
 
-export const addToCart = async (userId, productId, quantity, size) => {
-  const product = await Product.findById(productId);
-  if (!product) throw new Error("Product not found");
-
-  if (product.stock < quantity) {
-    throw new Error("Insufficient stock");
-  }
-
-  if (!product.availableSizes.includes(size)) {
-    throw new Error("Size not available for this product");
-  }
-
+  // Note: Jersey model doesn't have stock or availableSizes fields
+  // Remove these checks or add these fields to your Jersey model if needed
+  
   let cart = await Cart.findOne({ user: userId });
 
   if (!cart) {
@@ -42,27 +31,27 @@ export const addToCart = async (userId, productId, quantity, size) => {
       user: userId,
       items: [
         {
-          product: productId,
+          product: jerseyId, // This references the Jersey
           quantity,
           size,
-          price: product.price,
+          price: jersey.price,
         },
       ],
     });
   } else {
     // Check if item already exists
     const existingItem = cart.items.find(
-      (item) => item.product.toString() === productId && item.size === size
+      (item) => item.product.toString() === jerseyId && item.size === size
     );
 
     if (existingItem) {
       existingItem.quantity += quantity;
     } else {
       cart.items.push({
-        product: productId,
+        product: jerseyId,
         quantity,
         size,
-        price: product.price,
+        price: jersey.price,
       });
     }
   }
@@ -75,20 +64,18 @@ export const addToCart = async (userId, productId, quantity, size) => {
   return cart.populate("items.product");
 };
 
-export const updateCartItem = async (userId, productId, quantity, size) => {
+export const updateCartItem = async (userId, jerseyId, quantity, size) => {
   const cart = await Cart.findOne({ user: userId });
   if (!cart) throw new Error("Cart not found");
 
   const item = cart.items.find(
-    (item) => item.product.toString() === productId && item.size === size
+    (item) => item.product.toString() === jerseyId && item.size === size
   );
 
   if (!item) throw new Error("Item not found in cart");
 
-  const product = await Product.findById(productId);
-  if (product.stock < quantity) {
-    throw new Error("Insufficient stock");
-  }
+  // Remove stock check since Jersey model doesn't have stock field
+  // If you need stock management, add it to Jersey model
 
   item.quantity = quantity;
 
@@ -100,12 +87,12 @@ export const updateCartItem = async (userId, productId, quantity, size) => {
   return cart.populate("items.product");
 };
 
-export const removeFromCart = async (userId, productId, size) => {
+export const removeFromCart = async (userId, jerseyId, size) => {
   const cart = await Cart.findOne({ user: userId });
   if (!cart) throw new Error("Cart not found");
 
   cart.items = cart.items.filter(
-    (item) => !(item.product.toString() === productId && item.size === size)
+    (item) => !(item.product.toString() === jerseyId && item.size === size)
   );
 
   const { totalPrice, totalItems } = calculateCartTotals(cart.items);
@@ -114,6 +101,19 @@ export const removeFromCart = async (userId, productId, size) => {
 
   await cart.save();
   return cart.populate("items.product");
+};
+
+
+// cart.service.js
+
+export const getCart = async (userId) => {
+  let cart = await Cart.findOne({ user: userId }).populate("items.product");
+
+  if (!cart) {
+    cart = await Cart.create({ user: userId, items: [] });
+  }
+
+  return cart;
 };
 
 export const clearCart = async (userId) => {
