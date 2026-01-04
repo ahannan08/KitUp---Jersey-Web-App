@@ -1,4 +1,120 @@
 import Product from "./products.model.js";
+import mongoose from "mongoose";
+import Club from "../club/club.model.js";
+import Jersey from "../jersey/jersey.model.js";
+
+
+const escapeRegex = (s = "") => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+export const getClubs = async ({ page, limit, league, search }) => {
+  const query = {};
+
+  if (league) query.league = league;
+
+  if (search) {
+    const r = new RegExp(escapeRegex(search), "i");
+    // search by name / league (optional)
+    query.$or = [{ name: r }, { league: r }];
+  }
+
+  const skip = (page - 1) * limit;
+
+  const [data, total] = await Promise.all([
+    Club.find(query).sort({ name: 1 }).skip(skip).limit(limit).lean(),
+    Club.countDocuments(query),
+  ]);
+
+  return {
+    data,
+    page,
+    limit,
+    total,
+    totalPages: Math.ceil(total / limit),
+  };
+};
+
+export const getJerseys = async ({
+  page,
+  limit,
+  league,
+  type,
+  clubId,
+  clubName,
+  minPrice,
+  maxPrice,
+  search,
+}) => {
+  const query = {};
+
+  if (league) query.league = league;
+  if (type) query.type = type;
+
+  if (clubId) {
+    if (!mongoose.Types.ObjectId.isValid(clubId)) {
+      throw new Error("Invalid clubId");
+    }
+    query.clubId = new mongoose.Types.ObjectId(clubId);
+  }
+
+  if (clubName) query.clubName = clubName;
+
+  // price range
+  if (minPrice !== undefined || maxPrice !== undefined) {
+    query.price = {};
+    if (minPrice !== undefined) query.price.$gte = minPrice;
+    if (maxPrice !== undefined) query.price.$lte = maxPrice;
+  }
+
+  // "search" against clubName / league / type (you can add more fields later)
+  if (search) {
+    const r = new RegExp(escapeRegex(search), "i");
+    query.$or = [{ clubName: r }, { league: r }, { type: r }];
+  }
+
+  const skip = (page - 1) * limit;
+
+  const [data, total] = await Promise.all([
+    Jersey.find(query)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .lean(),
+    Jersey.countDocuments(query),
+  ]);
+
+  return {
+    data,
+    page,
+    limit,
+    total,
+    totalPages: Math.ceil(total / limit),
+  };
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 export const createProduct = async (productData, userId) => {
   const product = await Product.create({

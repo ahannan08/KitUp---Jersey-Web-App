@@ -7,6 +7,8 @@ import {
   updateProduct,
   deleteProduct,
   searchProducts,
+  fetchClubs,
+  fetchJerseys
 } from "./products.controller.js";
 import { protect, isAdmin } from "../../middlewares/auth.middleware.js";
 
@@ -14,6 +16,8 @@ const router = express.Router();
 
 // Public routes
 router.get("/", getAllProducts);
+router.get("/clubs", fetchClubs)
+router.get("/jerseys", fetchJerseys)
 router.get("/search", searchProducts);
 router.get("/:id", getProductById);
 router.get("/team/:team", getProductsByTeam);

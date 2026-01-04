@@ -1,5 +1,81 @@
 import * as productService from "./products.service.js";
 
+// controllers/products.controller.js
+
+export const fetchClubs = async (req, res) => {
+  try {
+    const { page = 1, limit = 20, league, search } = req.query;
+
+    const result = await productService.getClubs({
+      page: Number(page),
+      limit: Number(limit),
+      league,
+      search,
+    });
+
+    return res.status(200).json({ success: true, ...result });
+  } catch (err) {
+    return res.status(400).json({ success: false, message: err.message });
+  }
+};
+
+export const fetchJerseys = async (req, res) => {
+  try {
+    const {
+      page = 1,
+      limit = 20,
+      league,
+      type, // Home/Away/etc
+      clubId,
+      clubName,
+      minPrice,
+      maxPrice,
+      search,
+    } = req.query;
+
+    const result = await productService.getJerseys({
+      page: Number(page),
+      limit: Number(limit),
+      league,
+      type,
+      clubId,
+      clubName,
+      minPrice: minPrice !== undefined ? Number(minPrice) : undefined,
+      maxPrice: maxPrice !== undefined ? Number(maxPrice) : undefined,
+      search,
+    });
+
+    return res.status(200).json({ success: true, ...result });
+  } catch (err) {
+    return res.status(400).json({ success: false, message: err.message });
+  }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 export const createProduct = async (req, res) => {
   try {
     const product = await productService.createProduct(req.body, req.user._id);
