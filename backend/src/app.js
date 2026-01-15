@@ -13,7 +13,7 @@ const app = express();
 // CORS
 app.use(
   cors({
-    origin: ENV.FRONTEND_URL,
+    origin:"http://localhost:3000",
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -41,7 +41,7 @@ import cartRoutes from "../modules/cart/cart.routes.js";
 import wishlistRoutes from "../modules/wishlist/wishlist.routes.js";
 // import orderRoutes from "./modules/orders/order.route.js";
 // import paymentRoutes from "./modules/payments/payment.route.js";
-
+import clubRoutes from "../modules/club/club.routes.js";
 // Health check route
 app.get("/api/health", (req, res) => {
   res.status(200).json({
@@ -57,6 +57,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/carts", cartRoutes);
 app.use("/api/wishlists", wishlistRoutes);
+app.use("/api/clubs", clubRoutes);
 // app.use("/api/orders", orderRoutes);
 // app.use("/api/payments", paymentRoutes);
 
